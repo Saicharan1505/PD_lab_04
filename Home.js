@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home({ route, navigation }) {
   const { userEmail } = route.params;
+  const [userName, setUserName] = useState('');
+
+  const loadUserName = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem('userName');
+      if (storedName) {
+        setUserName(storedName);
+      }
+    } catch (error) {
+      console.error("Failed to load user name from local storage", error);
+    }
+  };
+
+  useEffect(() => {
+    loadUserName();
+  }, []);
 
   const handleLogout = () => {
     signOut(auth).then(() => {
@@ -16,13 +33,12 @@ export default function Home({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Logout button at the top-right corner */}
       <View style={styles.logoutButtonContainer}>
         <Button title="Logout" color="#007AFF" onPress={handleLogout} />
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.welcomeText}>Welcome to the Home Screen!</Text>
+        <Text style={styles.welcomeText}>Welcome, {userName}!</Text>
         <Text style={styles.emailText}>You are signed in as: {userEmail}</Text>
       </View>
     </View>
@@ -35,7 +51,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     padding: 20,
   },
-  // Content area in the center
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -51,10 +66,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
   },
-  // Logout button container with absolute positioning
   logoutButtonContainer: {
     position: 'absolute',
-    top: 40,
+    top: 40, // Fixed the missing value
     right: 20,
     width: 100, // Define width to control button size
   },

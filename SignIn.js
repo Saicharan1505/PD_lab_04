@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { signInWithEmailAndPassword } from "firebase/auth"; // Firebase sign-in function
-import { auth } from './firebaseConfig'; // Firebase auth object
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from './firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignIn({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const loadUserEmail = async () => {
+    try {
+      const storedEmail = await AsyncStorage.getItem('userEmail');
+      if (storedEmail) {
+        setEmail(storedEmail); // Pre-fill email
+      }
+    } catch (error) {
+      console.error("Failed to load email from local storage", error);
+    }
+  };
+
+  useEffect(() => {
+    loadUserEmail();
+  }, []);
 
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)

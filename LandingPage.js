@@ -6,7 +6,6 @@ export default function LandingPage({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to My App</Text>
       <Button title="Sign In" onPress={() => navigation.navigate('SignIn')} />
-      {/* Add marginTop to the Sign Up button for vertical spacing */}
       <View style={styles.buttonSpacing} />
       <Button title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
     </View>
@@ -24,6 +23,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonSpacing: {
-    marginTop: 20, // Adds vertical space between the buttons
+    marginTop: 20,
   },
 });
