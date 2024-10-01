@@ -15,7 +15,7 @@ export default function Home({ route, navigation }) {
   const { userEmail } = route.params;
   const [userName, setUserName] = useState('');
 
-  // Animated value for welcome text opacity
+  // Animated value for welcome text opacity and color
   const animatedOpacity = useRef(new Animated.Value(0)).current;
 
   // PanResponder for gesture handling
@@ -40,9 +40,15 @@ export default function Home({ route, navigation }) {
     Animated.timing(animatedOpacity, {
       toValue: 1,
       duration: 5000, // 5-second fade-in
-      useNativeDriver: true,
+      useNativeDriver: false, // We set this to false to support color interpolation
     }).start();
   }, []);
+
+  // Interpolating animated value to change color over time
+  const animatedColor = animatedOpacity.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#ff0000', '#00ff00'], // From red to green
+  });
 
   // PanResponder for the draggable object
   const panResponder = useRef(
@@ -77,7 +83,7 @@ export default function Home({ route, navigation }) {
 
       <View style={styles.content}>
         {/* Animated Text */}
-        <Animated.Text style={[styles.welcomeText, { opacity: animatedOpacity }]}>
+        <Animated.Text style={[styles.welcomeText, { opacity: animatedOpacity, color: animatedColor }]}>
           Welcome, {userName}!
         </Animated.Text>
         <Text style={styles.emailText}>You are signed in as: {userEmail}</Text>
@@ -108,7 +114,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333'
   },
   emailText: {
     fontSize: 18,
