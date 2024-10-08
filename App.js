@@ -1,22 +1,31 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import LandingPage from './LandingPage';
-import SignUp from './SignUp';
-import SignIn from './SignIn';
-import Home from './Home'; // Home screen
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import HomeScreen from './Home'; // Home screen
+import ImagePickerScreen from './ImagePickerScreen'; // Image Picker screen
+import LocationScreen from './LocationScreen'; // Location screen
+import { View, Text, Button } from 'react-native';
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LandingPage">
-        <Stack.Screen name="LandingPage" component={LandingPage} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="Home" component={Home} />
-      </Stack.Navigator>
+      <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Screen name="Home" component={HomeScreen} />
+        <Drawer.Screen name="Image Picker" component={ImagePickerScreen} />
+        <Drawer.Screen name="Location" component={LocationScreen} />
+        <Drawer.Screen name="Logout" component={LogoutScreen} />
+      </Drawer.Navigator>
     </NavigationContainer>
+  );
+}
+
+function LogoutScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>You are logged out!</Text>
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+    </View>
   );
 }
